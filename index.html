@@ -409,33 +409,38 @@ function exportDemoEvent(){let arr=JSON.parse(localStorage.getItem('seidu_demo_a
 /* Falling gold stardust, different sizes, speeds and twinkles */
 (()=>{const layer=document.querySelector('.mamma-fireflies');if(!layer)return;layer.replaceChildren();for(let i=0;i<115;i++){const dot=document.createElement('i');dot.className='mamma-firefly';const size=1.7+(i*13%19)*.18;dot.style.setProperty('--size',size+'px');dot.style.setProperty('--duration',(3.2+(i*17%23)*.13)+'s');dot.style.setProperty('--delay',(-i*.41)+'s');dot.style.setProperty('--drift',((i*7%15)-7)+'vw');dot.style.left=((i*47.13+11)%100)+'%';dot.style.top=((i*67.7+9)%115-15)+'%';layer.appendChild(dot)}})();
 </script><script>
-/* Ambient audio: try on load; retry silently at first browser-permitted interaction. */
+/* MammaBear Sanctuary ambient: start immediately if browser permits, otherwise on first interaction. */
 (()=>{
- let ctx=null,master=null,started=false;
- function setup(){
-  if(ctx)return;
-  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
-  ctx=new AC();master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
-  const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1150;filter.connect(master);
-  [174.61,261.63,349.23,440,523.25].forEach((hz,i)=>{
-   const osc=ctx.createOscillator(),gain=ctx.createGain(),lfo=ctx.createOscillator(),depth=ctx.createGain();
-   osc.type='sine';osc.frequency.value=hz;gain.gain.value=[.32,.21,.15,.06,.04][i];
-   lfo.frequency.value=.05+i*.009;depth.gain.value=[.05,.032,.025,.01,.008][i];
-   lfo.connect(depth);depth.connect(gain.gain);osc.connect(gain);gain.connect(filter);osc.start();lfo.start();
+ let ctx=null,output=null,initialized=false;
+ function init(){
+  if(initialized)return;
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  ctx=new AC();
+  output=ctx.createGain();output.gain.value=.48;output.connect(ctx.destination);
+  const lowpass=ctx.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=1400;lowpass.connect(output);
+  [174.61,261.63,349.23,440,523.25].forEach((freq,i)=>{
+   const o=ctx.createOscillator(),g=ctx.createGain(),lfo=ctx.createOscillator(),depth=ctx.createGain();
+   o.type='sine';o.frequency.value=freq;g.gain.value=[.36,.24,.17,.08,.06][i];
+   lfo.frequency.value=.04+i*.012;depth.gain.value=.016;
+   lfo.connect(depth);depth.connect(g.gain);o.connect(g);g.connect(lowpass);
+   o.start(0);lfo.start(0);
   });
+  initialized=true;
  }
- function tryStart(){
-  if(started)return;
+ function begin(){
   try{
-   setup();if(!ctx)return;
-   const activate=()=>{if(ctx.state!=='running')return;started=true;const t=ctx.currentTime;master.gain.cancelScheduledValues(t);master.gain.setTargetAtTime(.65,t,1.6)};
-   if(ctx.state==='running')activate();
-   else ctx.resume().then(activate).catch(()=>{});
+   init();
+   if(!ctx)return;
+   if(ctx.state!=='running'){const resumed=ctx.resume();if(resumed&&resumed.catch)resumed.catch(()=>{});}
   }catch(e){}
  }
- tryStart();
- ['pointerdown','touchstart','keydown','click'].forEach(type=>document.addEventListener(type,tryStart,{capture:true,passive:true}));
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)tryStart()});
+ // Try immediately; browsers with autoplay permission will play at once.
+ begin();
+ // Browser autoplay restrictions: a direct gesture is the earliest reliable start.
+ ['pointerdown','touchend','click','keydown'].forEach(event=>window.addEventListener(event,begin,{capture:true,passive:true}));
+ window.addEventListener('pageshow',begin);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)begin()});
 })();
 </script>
 </body></html>
