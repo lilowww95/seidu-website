@@ -414,33 +414,39 @@ function exportDemoEvent(){let arr=JSON.parse(localStorage.getItem('seidu_demo_a
 /* Floating golden fireflies: fewer, brighter, moving freely in every direction. */
 (()=>{const layer=document.querySelector('.mamma-fireflies');if(!layer)return;layer.replaceChildren();for(let i=0;i<44;i++){const dot=document.createElement('i');dot.className='mamma-firefly';const angle=(i*137.508)*Math.PI/180;const distance=7+(i*13%16);dot.style.setProperty('--size',(2.4+(i*7%11)*.22)+'px');dot.style.setProperty('--duration',(7+(i*11%17)*.45)+'s');dot.style.setProperty('--delay',(-i*.83)+'s');dot.style.setProperty('--dx',(Math.cos(angle)*distance).toFixed(2)+'vw');dot.style.setProperty('--dy',(Math.sin(angle)*distance*.75).toFixed(2)+'vh');dot.style.left=((i*61.803+9)%94+3)+'%';dot.style.top=((i*37.719+13)%90+5)+'%';layer.appendChild(dot)}})();
 </script><script>
-/* MammaBear Sanctuary — continuous ambient sound, no visible controls. */
+/* MammaBear Sanctuary — continuous healing drone, without melody or controls. */
 (()=>{
- let ctx=null,initialized=false;
- function ensureAudio(){
+ let ctx=null,ready=false;
+ function ensureSound(){
   try{
-   if(!initialized){
+   if(!ready){
     const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
     ctx=new AC();
-    const master=ctx.createGain();master.gain.value=.48;master.connect(ctx.destination);
-    const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1400;filter.connect(master);
-    [174.61,261.63,349.23,440,523.25].forEach((freq,i)=>{
-     const osc=ctx.createOscillator(),gain=ctx.createGain(),lfo=ctx.createOscillator(),depth=ctx.createGain();
-     osc.type='sine';osc.frequency.value=freq;gain.gain.value=[.36,.24,.17,.08,.06][i];
-     lfo.frequency.value=.04+i*.012;depth.gain.value=.016;
-     lfo.connect(depth);depth.connect(gain.gain);osc.connect(gain);gain.connect(filter);osc.start();lfo.start();
+    const master=ctx.createGain();master.gain.value=.30;master.connect(ctx.destination);
+    const warm=ctx.createBiquadFilter();warm.type='lowpass';warm.frequency.value=900;warm.Q.value=.3;warm.connect(master);
+    // Gentle continuous, slowly breathing harmonic bed.
+    [110,164.81,220,261.63,329.63,440].forEach((freq,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain(),lfo=ctx.createOscillator(),depth=ctx.createGain();
+      o.type='sine';o.frequency.value=freq;g.gain.value=[.23,.13,.13,.095,.045,.018][i];
+      lfo.type='sine';lfo.frequency.value=.027+i*.004;depth.gain.value=[.032,.018,.02,.012,.006,.003][i];
+      lfo.connect(depth);depth.connect(g.gain);o.connect(g);g.connect(warm);o.start();lfo.start();
     });
-    initialized=true;
+    // Continuous filtered air, like a very soft breath rather than hiss.
+    const length=ctx.sampleRate*4,buffer=ctx.createBuffer(1,length,ctx.sampleRate),data=buffer.getChannelData(0);
+    let last=0;for(let i=0;i<length;i++){const white=Math.random()*2-1;last=(last+.018*white)/1.018;data[i]=last*2.5;}
+    const air=ctx.createBufferSource(),airLow=ctx.createBiquadFilter(),airGain=ctx.createGain();
+    air.buffer=buffer;air.loop=true;airLow.type='lowpass';airLow.frequency.value=450;airGain.gain.value=.08;
+    air.connect(airLow);airLow.connect(airGain);airGain.connect(master);air.start();
+    ready=true;
    }
-   if(ctx&&ctx.state==='suspended')ctx.resume().catch(()=>{});
+   if(ctx&&ctx.state!=='running')ctx.resume().catch(()=>{});
   }catch(e){}
  }
- // Start at page load if permitted; resume on the earliest permitted gesture.
- ensureAudio();
- ['pointerdown','touchstart','touchend','click','keydown','scroll'].forEach(event=>window.addEventListener(event,ensureAudio,{capture:true,passive:true}));
- window.addEventListener('pageshow',ensureAudio);
- window.addEventListener('focus',ensureAudio);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)ensureAudio()});
+ ensureSound();
+ ['pointerdown','touchstart','touchend','click','keydown'].forEach(type=>window.addEventListener(type,ensureSound,{capture:true,passive:true}));
+ window.addEventListener('pageshow',ensureSound);
+ window.addEventListener('focus',ensureSound);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)ensureSound()});
 })();
 </script>
 </body></html>
