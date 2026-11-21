@@ -288,7 +288,13 @@ body{background:#1b0c08}
 .mamma-sound-toggle{position:fixed;right:16px;bottom:18px;z-index:100;background:rgba(31,13,9,.78);color:#efc68d;border:1px solid rgba(236,181,107,.45);border-radius:24px;padding:9px 13px;font-size:11px;letter-spacing:.07em;cursor:pointer;backdrop-filter:blur(8px)}
 .mamma-sound-toggle:hover{background:#442015}
 @media(prefers-reduced-motion:reduce){.mamma-firefly{animation:none;opacity:.35}}
-</style></head><body><div class="mamma-fireflies" aria-hidden="true"></div><button type="button" class="mamma-sound-toggle" id="mammaSoundToggle" aria-pressed="false">♫  Activer le son</button><a class="skip" href="#main">Skip to content</a><header class="top"><div class="logo">MammaBear Sanctuary<small>THE WAY HOME</small></div><button aria-label="Switch language" class="lang mobile-lang" id="mobileLang" onclick="switchLang()">FR</button><button aria-label="Open menu" class="mobile-toggle" onclick="document.querySelector('.nav').classList.toggle('show')">☰</button><nav aria-label="Main" class="nav"><a data-i="home" href="#main">Home</a><a data-i="experiences" href="#experiences">Experiences</a><a data-i="gatherings" href="#gatherings">Gatherings</a><a data-i="about" href="#about">About</a><a data-i="contact" href="#contact">Contact</a><button aria-label="Switch language" class="lang" id="langBtn" onclick="switchLang()">FR</button></nav></header>
+</style><style>
+/* Slow, subtle motion for the circular motifs over Sister Call and Song of Your Soul */
+.experiences .card:nth-child(1) .symbol::after,.experiences .card:nth-child(2) .symbol::after{inset:22px 30%;border:1px solid rgba(247,207,146,.7);border-radius:50%;box-shadow:0 0 20px rgba(239,171,92,.34),inset 0 0 20px rgba(255,190,105,.1);transform-origin:center;animation:mammaCircleFloat 8s ease-in-out infinite alternate}
+.experiences .card:nth-child(2) .symbol::after{animation-duration:10s;animation-delay:-3s}
+@keyframes mammaCircleFloat{0%{transform:translate3d(-9px,5px,0) scale(.94) rotate(-4deg);opacity:.53}50%{transform:translate3d(8px,-7px,0) scale(1.07) rotate(4deg);opacity:.9}100%{transform:translate3d(-4px,8px,0) scale(.98) rotate(-2deg);opacity:.62}}
+@media(prefers-reduced-motion:reduce){.experiences .card:nth-child(1) .symbol::after,.experiences .card:nth-child(2) .symbol::after{animation:none!important}}
+</style></head><body><div class="mamma-fireflies" aria-hidden="true"></div><a class="skip" href="#main">Skip to content</a><header class="top"><div class="logo">MammaBear Sanctuary<small>THE WAY HOME</small></div><button aria-label="Switch language" class="lang mobile-lang" id="mobileLang" onclick="switchLang()">FR</button><button aria-label="Open menu" class="mobile-toggle" onclick="document.querySelector('.nav').classList.toggle('show')">☰</button><nav aria-label="Main" class="nav"><a data-i="home" href="#main">Home</a><a data-i="experiences" href="#experiences">Experiences</a><a data-i="gatherings" href="#gatherings">Gatherings</a><a data-i="about" href="#about">About</a><a data-i="contact" href="#contact">Contact</a><button aria-label="Switch language" class="lang" id="langBtn" onclick="switchLang()">FR</button></nav></header>
 <main id="main"><section class="hero"><canvas aria-hidden="true" id="livingVeil"></canvas><div aria-hidden="true" class="silk-veil"></div><div class="hero-copy"><div class="eyebrow" data-i="eyebrow">A SPACE TO RETURN TO YOURSELF</div><h1><span data-i="headline">There is nothing to become.</span><br/><em data-i="headline2">Only more of yourself to remember.</em></h1><p class="lead" data-i="heroDesc">A space to explore what you feel, reconnect with yourself and find your own way home.</p><div class="actions"><a class="btn primary" data-i="explore" href="#experiences">Explore the experiences</a><a class="btn" data-i="join" href="#gatherings">Join a gathering</a></div></div></section>
 <section class="section recognition"><div aria-label="Composition abstraite de lumière dorée et ombres organiques" class="art" role="img"></div><div><div class="eyebrow">01 / <span data-i="recognition">THE RECOGNITION</span></div><h2 data-i="recognitionTitle">You have always felt there was more within you.</h2><p data-i="recognitionDesc">Sometimes familiar patterns no longer feel right. Here, you can begin exactly where you are, without needing all the answers.</p></div></section>
 <section class="section experiences" id="experiences"><div class="center"><div class="eyebrow">02 / <span data-i="expEyebrow">THE EXPERIENCES</span></div><h2 data-i="ways">Ways to Begin</h2><p data-i="waysDesc">Choose the experience that feels right for you. Every offering has its own pace and format.</p></div><div class="cards"><article class="card"><div aria-hidden="true" class="symbol"></div><h3>Sister Call</h3><div class="price">€66</div><div class="meta" data-i="sixty">60 minutes · Online</div><p data-i="sisterDesc">A one-to-one conversation for listening, questions and intuitive perspective.</p><button class="btn" data-i="book" onclick="showDetail('sister')">Booking details</button></article><article class="card"><div aria-hidden="true" class="symbol"></div><h3>Song of Your Soul</h3><div class="price">€111</div><div class="meta" data-i="sixty">60 minutes · Online</div><p data-i="songDesc">A conversation followed by an intuitive singing experience.</p><button class="btn" data-i="book" onclick="showDetail('song')">Booking details</button></article><article class="card portal-offer"><img class="portal-offer-image" src="visual_12.webp" alt="Racines anciennes baignées de lumière ambrée"><h3>The Portals</h3><div class="price" data-i="from">From €1,600</div><div class="meta" data-i="portalMeta">3 individual sessions + 2 Sister Calls per Portal</div><p data-i="portalDesc">Two complementary experiences: The Beginning and Opening the Path. Both together: €3,000.</p><button class="btn" data-i="learn" onclick="showDetail('portals')">Learn more</button></article></div><p class="center" data-i="notSure" style="margin-top:45px">Not sure where to begin? A Sister Call can be a gentle first conversation.</p></section>
@@ -363,25 +369,33 @@ function exportDemoEvent(){let arr=JSON.parse(localStorage.getItem('seidu_demo_a
 /* Light points scattered across the viewport, deterministic placement */
 (()=>{const layer=document.querySelector('.mamma-fireflies');if(!layer)return;for(let i=0;i<32;i++){const dot=document.createElement('i');dot.className='mamma-firefly';dot.style.setProperty('--size',(1.3+(i*7%9)*.27)+'px');dot.style.setProperty('--duration',(3.8+(i*11%17)*.3)+'s');dot.style.setProperty('--delay',(-i*.57)+'s');dot.style.left=((i*37.7+11)%96+2)+'%';dot.style.top=((i*61.3+7)%94+3)+'%';layer.appendChild(dot)}})();
 </script><script>
-/* MammaBear Sanctuary: sound only after a deliberate visitor action. */
+/* Ambient audio: try on load; retry silently at first browser-permitted interaction. */
 (()=>{
- const btn=document.getElementById('mammaSoundToggle');let ctx=null,master=null,playing=false,voices=[];
- function init(){
+ let ctx=null,master=null,started=false;
+ function setup(){
   if(ctx)return;
   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
   ctx=new AC();master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
-  const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=950;filter.connect(master);
+  const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1150;filter.connect(master);
   [174.61,261.63,349.23,440,523.25].forEach((hz,i)=>{
    const osc=ctx.createOscillator(),gain=ctx.createGain(),lfo=ctx.createOscillator(),depth=ctx.createGain();
-   osc.type='sine';osc.frequency.value=hz;gain.gain.value=[.30,.20,.14,.065,.045][i];
-   lfo.frequency.value=.055+i*.008;depth.gain.value=[.045,.035,.025,.012,.01][i];
-   lfo.connect(depth);depth.connect(gain.gain);osc.connect(gain);gain.connect(filter);osc.start();lfo.start();voices.push(osc,lfo);
+   osc.type='sine';osc.frequency.value=hz;gain.gain.value=[.32,.21,.15,.06,.04][i];
+   lfo.frequency.value=.05+i*.009;depth.gain.value=[.05,.032,.025,.01,.008][i];
+   lfo.connect(depth);depth.connect(gain.gain);osc.connect(gain);gain.connect(filter);osc.start();lfo.start();
   });
  }
- async function toggle(){
-  try{init();if(!ctx)return;await ctx.resume();const t=ctx.currentTime;master.gain.cancelScheduledValues(t);master.gain.setTargetAtTime(playing?0:.6,t,.45);playing=!playing;btn.textContent=playing?'♫  Couper le son':'♫  Activer le son';btn.setAttribute('aria-pressed',String(playing));}catch(e){btn.textContent='♫  Activer le son'}
+ function tryStart(){
+  if(started)return;
+  try{
+   setup();if(!ctx)return;
+   const activate=()=>{if(ctx.state!=='running')return;started=true;const t=ctx.currentTime;master.gain.cancelScheduledValues(t);master.gain.setTargetAtTime(.65,t,1.6)};
+   if(ctx.state==='running')activate();
+   else ctx.resume().then(activate).catch(()=>{});
+  }catch(e){}
  }
- btn.addEventListener('click',toggle);
+ tryStart();
+ ['pointerdown','touchstart','keydown','click'].forEach(type=>document.addEventListener(type,tryStart,{capture:true,passive:true}));
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)tryStart()});
 })();
 </script>
 </body></html>
