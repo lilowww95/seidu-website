@@ -316,22 +316,30 @@ function exportDemoEvent(){let arr=JSON.parse(localStorage.getItem('seidu_demo_a
  });observer.observe(title,{childList:true,characterData:true,subtree:true});
 })();</script>
 <script>
-/* SEI DU — ambient sound, unlocked at first permitted interaction */
-let seiduAmbientContext=null;
-let seiduAmbientMaster=null;
+/* SEI DU — original feminine reconnection soundscape (Web Audio). */
+let seiduSound=null;
 function startSeiduAmbient(){
  try{
-  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
-  if(!seiduAmbientContext){
-   const ctx=new C();seiduAmbientContext=ctx;
-   const master=ctx.createGain();seiduAmbientMaster=master;master.gain.value=0;master.connect(ctx.destination);
-   const voices=[{f:174.61,v:.20},{f:261.63,v:.13},{f:349.23,v:.085},{f:523.25,v:.045}];
-   voices.forEach((voice,i)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type=i===0?'triangle':'sine';osc.frequency.value=voice.f;g.gain.value=voice.v;osc.connect(g);g.connect(master);osc.start();});
-   const lfo=ctx.createOscillator(),lfoGain=ctx.createGain();lfo.frequency.value=.085;lfoGain.gain.value=.045;lfo.connect(lfoGain);lfoGain.connect(master.gain);lfo.start();
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+  if(!seiduSound){
+   const ctx=new AC(),master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
+   const low=ctx.createBiquadFilter();low.type='lowpass';low.frequency.value=1300;low.connect(master);
+   const chord=[174.61,261.63,349.23,440,523.25];
+   chord.forEach((hz,i)=>{
+    const osc=ctx.createOscillator(),voice=ctx.createGain();osc.type='sine';osc.frequency.value=hz;voice.gain.value=[.14,.095,.075,.035,.025][i];osc.connect(voice);voice.connect(low);osc.start();
+    const breath=ctx.createOscillator(),depth=ctx.createGain();breath.frequency.value=.045+i*.007;depth.gain.value=[.035,.027,.02,.012,.009][i];breath.connect(depth);depth.connect(voice.gain);breath.start();
+   });
+   const buffer=ctx.createBuffer(1,ctx.sampleRate*3,ctx.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*.28;
+   const air=ctx.createBufferSource(),airFilter=ctx.createBiquadFilter(),airGain=ctx.createGain();air.buffer=buffer;air.loop=true;airFilter.type='lowpass';airFilter.frequency.value=320;airGain.gain.value=.055;air.connect(airFilter);airFilter.connect(airGain);airGain.connect(master);air.start();
+   const notes=[523.25,659.25,783.99,698.46,587.33,523.25,440,523.25];let next=ctx.currentTime+1.8,n=0;
+   function bell(at,hz){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(hz,at);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.095,at+.05);g.gain.exponentialRampToValueAtTime(.0001,at+4.5);o.connect(g);g.connect(master);o.start(at);o.stop(at+4.6)}
+   function schedule(){if(ctx.state!=='running')return;while(next<ctx.currentTime+10){bell(next,notes[n%notes.length]);n++;next+=3.4+(n%3)*.65}}
+   const timer=setInterval(schedule,1800);
+   seiduSound={ctx,master,timer,schedule};
   }
-  const ctx=seiduAmbientContext;
-  if(ctx.state!=='running')ctx.resume().then(()=>{const t=ctx.currentTime;seiduAmbientMaster.gain.cancelScheduledValues(t);seiduAmbientMaster.gain.setTargetAtTime(.32,t,.8)}).catch(()=>{});
-  else if(seiduAmbientMaster.gain.value<.1){const t=ctx.currentTime;seiduAmbientMaster.gain.setTargetAtTime(.32,t,.8)}
+  const {ctx,master,schedule}=seiduSound;
+  const awaken=()=>{const t=ctx.currentTime;master.gain.cancelScheduledValues(t);master.gain.setTargetAtTime(.55,t,1.4);schedule()};
+  if(ctx.state!=='running')ctx.resume().then(awaken).catch(()=>{});else awaken();
  }catch(e){}
 }
 startSeiduAmbient();
