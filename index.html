@@ -316,19 +316,26 @@ function exportDemoEvent(){let arr=JSON.parse(localStorage.getItem('seidu_demo_a
  });observer.observe(title,{childList:true,characterData:true,subtree:true});
 })();</script>
 <script>
-/* SEI DU ambient audio — browser autoplay policies may require a gesture. */
+/* SEI DU — ambient sound, unlocked at first permitted interaction */
 let seiduAmbientContext=null;
+let seiduAmbientMaster=null;
 function startSeiduAmbient(){
- if(seiduAmbientContext){if(seiduAmbientContext.state==='suspended')seiduAmbientContext.resume().catch(()=>{});return;}
  try{
-  const AudioCtor=window.AudioContext||window.webkitAudioContext;if(!AudioCtor)return;
-  const ctx=new AudioCtor();seiduAmbientContext=ctx;
-  const master=ctx.createGain();master.gain.value=.14;master.connect(ctx.destination);
-  [130.81,196,261.63,329.63].forEach((hz,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=hz;gain.gain.value=i===0?.27:.09;osc.connect(gain);gain.connect(master);osc.start();});
-  ctx.resume().catch(()=>{});
+  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+  if(!seiduAmbientContext){
+   const ctx=new C();seiduAmbientContext=ctx;
+   const master=ctx.createGain();seiduAmbientMaster=master;master.gain.value=0;master.connect(ctx.destination);
+   const voices=[{f:174.61,v:.20},{f:261.63,v:.13},{f:349.23,v:.085},{f:523.25,v:.045}];
+   voices.forEach((voice,i)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type=i===0?'triangle':'sine';osc.frequency.value=voice.f;g.gain.value=voice.v;osc.connect(g);g.connect(master);osc.start();});
+   const lfo=ctx.createOscillator(),lfoGain=ctx.createGain();lfo.frequency.value=.085;lfoGain.gain.value=.045;lfo.connect(lfoGain);lfoGain.connect(master.gain);lfo.start();
+  }
+  const ctx=seiduAmbientContext;
+  if(ctx.state!=='running')ctx.resume().then(()=>{const t=ctx.currentTime;seiduAmbientMaster.gain.cancelScheduledValues(t);seiduAmbientMaster.gain.setTargetAtTime(.32,t,.8)}).catch(()=>{});
+  else if(seiduAmbientMaster.gain.value<.1){const t=ctx.currentTime;seiduAmbientMaster.gain.setTargetAtTime(.32,t,.8)}
  }catch(e){}
 }
 startSeiduAmbient();
-['pointerdown','click','keydown','touchstart'].forEach(type=>document.addEventListener(type,startSeiduAmbient,{passive:true,capture:true}));
+['pointerdown','touchstart','keydown','click'].forEach(type=>document.addEventListener(type,startSeiduAmbient,{capture:true,passive:true}));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)startSeiduAmbient()});
 </script>
 </body></html>
