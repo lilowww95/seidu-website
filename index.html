@@ -279,7 +279,16 @@ body{background:#1b0c08}
 .hero{background-image:linear-gradient(90deg,rgba(23,10,7,.48),rgba(34,13,8,.10)),url("visual_01.webp")!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important}
 .hero::before,.hero::after{display:none!important}
 .hero .silk-veil{display:block!important}
-</style></head><body><div class="seidu-golden-threads" aria-hidden="true"><svg viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="seiduThreadGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#b98239" stop-opacity="0"/><stop offset="35%" stop-color="#f7d89d" stop-opacity=".75"/><stop offset="75%" stop-color="#d59b52" stop-opacity=".58"/><stop offset="100%" stop-color="#f8e4bd" stop-opacity="0"/></linearGradient><filter id="seiduThreadGlow"><feGaussianBlur stdDeviation="2.5"/></filter></defs><g fill="none" stroke="url(#seiduThreadGold)" stroke-width="1.4"><path class="seidu-thread t1" d="M-140 195 C 180 40 420 350 740 185 S 1180 40 1580 290"/><path class="seidu-thread t2" d="M-110 700 C 210 510 400 850 760 620 S 1230 510 1580 720"/><path class="seidu-thread t3" d="M-90 480 C 310 210 460 620 780 425 S 1180 280 1540 420"/></g><g fill="#ffe6ac"><circle class="seidu-spark s1" r="3"><animateMotion dur="15s" repeatCount="indefinite" path="M-140 195 C 180 40 420 350 740 185 S 1180 40 1580 290"/></circle><circle class="seidu-spark s2" r="2.5"><animateMotion dur="20s" repeatCount="indefinite" path="M-110 700 C 210 510 400 850 760 620 S 1230 510 1580 720"/></circle><circle class="seidu-spark s3" r="2"><animateMotion dur="18s" repeatCount="indefinite" path="M-90 480 C 310 210 460 620 780 425 S 1180 280 1540 420"/></circle></g></svg></div><a class="skip" href="#main">Skip to content</a><header class="top"><div class="logo">MammaBear Sanctuary<small>THE WAY HOME</small></div><button aria-label="Switch language" class="lang mobile-lang" id="mobileLang" onclick="switchLang()">FR</button><button aria-label="Open menu" class="mobile-toggle" onclick="document.querySelector('.nav').classList.toggle('show')">☰</button><nav aria-label="Main" class="nav"><a data-i="home" href="#main">Home</a><a data-i="experiences" href="#experiences">Experiences</a><a data-i="gatherings" href="#gatherings">Gatherings</a><a data-i="about" href="#about">About</a><a data-i="contact" href="#contact">Contact</a><button aria-label="Switch language" class="lang" id="langBtn" onclick="switchLang()">FR</button></nav></header>
+</style><style>
+/* Tiny golden fireflies: no visible connecting lines */
+.seidu-golden-threads{display:none!important}
+.mamma-fireflies{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+.mamma-firefly{position:absolute;width:var(--size);height:var(--size);border-radius:50%;background:#ffe2a0;box-shadow:0 0 5px 1px rgba(255,185,82,.62),0 0 13px rgba(233,126,28,.22);opacity:0;animation:mammaFireflyGlow var(--duration) ease-in-out var(--delay) infinite alternate}
+@keyframes mammaFireflyGlow{0%,12%{opacity:0;transform:translate3d(0,3px,0) scale(.55)}55%{opacity:.72}100%{opacity:.08;transform:translate3d(5px,-8px,0) scale(1.15)}}
+.mamma-sound-toggle{position:fixed;right:16px;bottom:18px;z-index:100;background:rgba(31,13,9,.78);color:#efc68d;border:1px solid rgba(236,181,107,.45);border-radius:24px;padding:9px 13px;font-size:11px;letter-spacing:.07em;cursor:pointer;backdrop-filter:blur(8px)}
+.mamma-sound-toggle:hover{background:#442015}
+@media(prefers-reduced-motion:reduce){.mamma-firefly{animation:none;opacity:.35}}
+</style></head><body><div class="mamma-fireflies" aria-hidden="true"></div><button type="button" class="mamma-sound-toggle" id="mammaSoundToggle" aria-pressed="false">♫  Activer le son</button><a class="skip" href="#main">Skip to content</a><header class="top"><div class="logo">MammaBear Sanctuary<small>THE WAY HOME</small></div><button aria-label="Switch language" class="lang mobile-lang" id="mobileLang" onclick="switchLang()">FR</button><button aria-label="Open menu" class="mobile-toggle" onclick="document.querySelector('.nav').classList.toggle('show')">☰</button><nav aria-label="Main" class="nav"><a data-i="home" href="#main">Home</a><a data-i="experiences" href="#experiences">Experiences</a><a data-i="gatherings" href="#gatherings">Gatherings</a><a data-i="about" href="#about">About</a><a data-i="contact" href="#contact">Contact</a><button aria-label="Switch language" class="lang" id="langBtn" onclick="switchLang()">FR</button></nav></header>
 <main id="main"><section class="hero"><canvas aria-hidden="true" id="livingVeil"></canvas><div aria-hidden="true" class="silk-veil"></div><div class="hero-copy"><div class="eyebrow" data-i="eyebrow">A SPACE TO RETURN TO YOURSELF</div><h1><span data-i="headline">There is nothing to become.</span><br/><em data-i="headline2">Only more of yourself to remember.</em></h1><p class="lead" data-i="heroDesc">A space to explore what you feel, reconnect with yourself and find your own way home.</p><div class="actions"><a class="btn primary" data-i="explore" href="#experiences">Explore the experiences</a><a class="btn" data-i="join" href="#gatherings">Join a gathering</a></div></div></section>
 <section class="section recognition"><div aria-label="Composition abstraite de lumière dorée et ombres organiques" class="art" role="img"></div><div><div class="eyebrow">01 / <span data-i="recognition">THE RECOGNITION</span></div><h2 data-i="recognitionTitle">You have always felt there was more within you.</h2><p data-i="recognitionDesc">Sometimes familiar patterns no longer feel right. Here, you can begin exactly where you are, without needing all the answers.</p></div></section>
 <section class="section experiences" id="experiences"><div class="center"><div class="eyebrow">02 / <span data-i="expEyebrow">THE EXPERIENCES</span></div><h2 data-i="ways">Ways to Begin</h2><p data-i="waysDesc">Choose the experience that feels right for you. Every offering has its own pace and format.</p></div><div class="cards"><article class="card"><div aria-hidden="true" class="symbol"></div><h3>Sister Call</h3><div class="price">€66</div><div class="meta" data-i="sixty">60 minutes · Online</div><p data-i="sisterDesc">A one-to-one conversation for listening, questions and intuitive perspective.</p><button class="btn" data-i="book" onclick="showDetail('sister')">Booking details</button></article><article class="card"><div aria-hidden="true" class="symbol"></div><h3>Song of Your Soul</h3><div class="price">€111</div><div class="meta" data-i="sixty">60 minutes · Online</div><p data-i="songDesc">A conversation followed by an intuitive singing experience.</p><button class="btn" data-i="book" onclick="showDetail('song')">Booking details</button></article><article class="card portal-offer"><img class="portal-offer-image" src="visual_12.webp" alt="Racines anciennes baignées de lumière ambrée"><h3>The Portals</h3><div class="price" data-i="from">From €1,600</div><div class="meta" data-i="portalMeta">3 individual sessions + 2 Sister Calls per Portal</div><p data-i="portalDesc">Two complementary experiences: The Beginning and Opening the Path. Both together: €3,000.</p><button class="btn" data-i="learn" onclick="showDetail('portals')">Learn more</button></article></div><p class="center" data-i="notSure" style="margin-top:45px">Not sure where to begin? A Sister Call can be a gentle first conversation.</p></section>
@@ -351,34 +360,28 @@ function exportDemoEvent(){let arr=JSON.parse(localStorage.getItem('seidu_demo_a
  });observer.observe(title,{childList:true,characterData:true,subtree:true});
 })();</script>
 <script>
-/* MammaBear Sanctuary — original feminine reconnection soundscape (Web Audio). */
-let seiduSound=null;
-function startSeiduAmbient(){
- try{
+/* Light points scattered across the viewport, deterministic placement */
+(()=>{const layer=document.querySelector('.mamma-fireflies');if(!layer)return;for(let i=0;i<32;i++){const dot=document.createElement('i');dot.className='mamma-firefly';dot.style.setProperty('--size',(1.3+(i*7%9)*.27)+'px');dot.style.setProperty('--duration',(3.8+(i*11%17)*.3)+'s');dot.style.setProperty('--delay',(-i*.57)+'s');dot.style.left=((i*37.7+11)%96+2)+'%';dot.style.top=((i*61.3+7)%94+3)+'%';layer.appendChild(dot)}})();
+</script><script>
+/* MammaBear Sanctuary: sound only after a deliberate visitor action. */
+(()=>{
+ const btn=document.getElementById('mammaSoundToggle');let ctx=null,master=null,playing=false,voices=[];
+ function init(){
+  if(ctx)return;
   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
-  if(!seiduSound){
-   const ctx=new AC(),master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
-   const low=ctx.createBiquadFilter();low.type='lowpass';low.frequency.value=1300;low.connect(master);
-   const chord=[174.61,261.63,349.23,440,523.25];
-   chord.forEach((hz,i)=>{
-    const osc=ctx.createOscillator(),voice=ctx.createGain();osc.type='sine';osc.frequency.value=hz;voice.gain.value=[.14,.095,.075,.035,.025][i];osc.connect(voice);voice.connect(low);osc.start();
-    const breath=ctx.createOscillator(),depth=ctx.createGain();breath.frequency.value=.045+i*.007;depth.gain.value=[.035,.027,.02,.012,.009][i];breath.connect(depth);depth.connect(voice.gain);breath.start();
-   });
-   const buffer=ctx.createBuffer(1,ctx.sampleRate*3,ctx.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*.28;
-   const air=ctx.createBufferSource(),airFilter=ctx.createBiquadFilter(),airGain=ctx.createGain();air.buffer=buffer;air.loop=true;airFilter.type='lowpass';airFilter.frequency.value=320;airGain.gain.value=.055;air.connect(airFilter);airFilter.connect(airGain);airGain.connect(master);air.start();
-   const notes=[523.25,659.25,783.99,698.46,587.33,523.25,440,523.25];let next=ctx.currentTime+1.8,n=0;
-   function bell(at,hz){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(hz,at);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.095,at+.05);g.gain.exponentialRampToValueAtTime(.0001,at+4.5);o.connect(g);g.connect(master);o.start(at);o.stop(at+4.6)}
-   function schedule(){if(ctx.state!=='running')return;while(next<ctx.currentTime+10){bell(next,notes[n%notes.length]);n++;next+=3.4+(n%3)*.65}}
-   const timer=setInterval(schedule,1800);
-   seiduSound={ctx,master,timer,schedule};
-  }
-  const {ctx,master,schedule}=seiduSound;
-  const awaken=()=>{const t=ctx.currentTime;master.gain.cancelScheduledValues(t);master.gain.setTargetAtTime(.55,t,1.4);schedule()};
-  if(ctx.state!=='running')ctx.resume().then(awaken).catch(()=>{});else awaken();
- }catch(e){}
-}
-startSeiduAmbient();
-['pointerdown','touchstart','keydown','click'].forEach(type=>document.addEventListener(type,startSeiduAmbient,{capture:true,passive:true}));
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)startSeiduAmbient()});
+  ctx=new AC();master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
+  const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=950;filter.connect(master);
+  [174.61,261.63,349.23,440,523.25].forEach((hz,i)=>{
+   const osc=ctx.createOscillator(),gain=ctx.createGain(),lfo=ctx.createOscillator(),depth=ctx.createGain();
+   osc.type='sine';osc.frequency.value=hz;gain.gain.value=[.30,.20,.14,.065,.045][i];
+   lfo.frequency.value=.055+i*.008;depth.gain.value=[.045,.035,.025,.012,.01][i];
+   lfo.connect(depth);depth.connect(gain.gain);osc.connect(gain);gain.connect(filter);osc.start();lfo.start();voices.push(osc,lfo);
+  });
+ }
+ async function toggle(){
+  try{init();if(!ctx)return;await ctx.resume();const t=ctx.currentTime;master.gain.cancelScheduledValues(t);master.gain.setTargetAtTime(playing?0:.6,t,.45);playing=!playing;btn.textContent=playing?'♫  Couper le son':'♫  Activer le son';btn.setAttribute('aria-pressed',String(playing));}catch(e){btn.textContent='♫  Activer le son'}
+ }
+ btn.addEventListener('click',toggle);
+})();
 </script>
 </body></html>
