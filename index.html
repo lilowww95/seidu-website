@@ -414,38 +414,33 @@ function exportDemoEvent(){let arr=JSON.parse(localStorage.getItem('seidu_demo_a
 /* Floating golden fireflies: fewer, brighter, moving freely in every direction. */
 (()=>{const layer=document.querySelector('.mamma-fireflies');if(!layer)return;layer.replaceChildren();for(let i=0;i<44;i++){const dot=document.createElement('i');dot.className='mamma-firefly';const angle=(i*137.508)*Math.PI/180;const distance=7+(i*13%16);dot.style.setProperty('--size',(2.4+(i*7%11)*.22)+'px');dot.style.setProperty('--duration',(7+(i*11%17)*.45)+'s');dot.style.setProperty('--delay',(-i*.83)+'s');dot.style.setProperty('--dx',(Math.cos(angle)*distance).toFixed(2)+'vw');dot.style.setProperty('--dy',(Math.sin(angle)*distance*.75).toFixed(2)+'vh');dot.style.left=((i*61.803+9)%94+3)+'%';dot.style.top=((i*37.719+13)%90+5)+'%';layer.appendChild(dot)}})();
 </script><script>
-/* MammaBear Sanctuary ambient: start immediately if browser permits, otherwise on first interaction. */
+/* MammaBear Sanctuary — continuous ambient sound, no visible controls. */
 (()=>{
- let ctx=null,output=null,initialized=false;
- function init(){
-  if(initialized)return;
-  const AC=window.AudioContext||window.webkitAudioContext;
-  if(!AC)return;
-  ctx=new AC();
-  output=ctx.createGain();output.gain.value=.48;output.connect(ctx.destination);
-  const lowpass=ctx.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=1400;lowpass.connect(output);
-  [174.61,261.63,349.23,440,523.25].forEach((freq,i)=>{
-   const o=ctx.createOscillator(),g=ctx.createGain(),lfo=ctx.createOscillator(),depth=ctx.createGain();
-   o.type='sine';o.frequency.value=freq;g.gain.value=[.36,.24,.17,.08,.06][i];
-   lfo.frequency.value=.04+i*.012;depth.gain.value=.016;
-   lfo.connect(depth);depth.connect(g.gain);o.connect(g);g.connect(lowpass);
-   o.start(0);lfo.start(0);
-  });
-  initialized=true;
- }
- function begin(){
+ let ctx=null,initialized=false;
+ function ensureAudio(){
   try{
-   init();
-   if(!ctx)return;
-   if(ctx.state!=='running'){const resumed=ctx.resume();if(resumed&&resumed.catch)resumed.catch(()=>{});}
+   if(!initialized){
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    ctx=new AC();
+    const master=ctx.createGain();master.gain.value=.48;master.connect(ctx.destination);
+    const filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1400;filter.connect(master);
+    [174.61,261.63,349.23,440,523.25].forEach((freq,i)=>{
+     const osc=ctx.createOscillator(),gain=ctx.createGain(),lfo=ctx.createOscillator(),depth=ctx.createGain();
+     osc.type='sine';osc.frequency.value=freq;gain.gain.value=[.36,.24,.17,.08,.06][i];
+     lfo.frequency.value=.04+i*.012;depth.gain.value=.016;
+     lfo.connect(depth);depth.connect(gain.gain);osc.connect(gain);gain.connect(filter);osc.start();lfo.start();
+    });
+    initialized=true;
+   }
+   if(ctx&&ctx.state==='suspended')ctx.resume().catch(()=>{});
   }catch(e){}
  }
- // Try immediately; browsers with autoplay permission will play at once.
- begin();
- // Browser autoplay restrictions: a direct gesture is the earliest reliable start.
- ['pointerdown','touchend','click','keydown'].forEach(event=>window.addEventListener(event,begin,{capture:true,passive:true}));
- window.addEventListener('pageshow',begin);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)begin()});
+ // Start at page load if permitted; resume on the earliest permitted gesture.
+ ensureAudio();
+ ['pointerdown','touchstart','touchend','click','keydown','scroll'].forEach(event=>window.addEventListener(event,ensureAudio,{capture:true,passive:true}));
+ window.addEventListener('pageshow',ensureAudio);
+ window.addEventListener('focus',ensureAudio);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)ensureAudio()});
 })();
 </script>
 </body></html>
